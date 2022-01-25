@@ -50,25 +50,25 @@ public class CustomerController {
         return "profile";
     }
 
-    @PutMapping("/edit-info")
+    @PostMapping("/edit-info")
     public String editAccount(@ModelAttribute Customer customer){
 
         return "profile";
     }
 
-    @PutMapping("/edit-email")
+    @PostMapping("/edit-email")
     public String editEmail(@ModelAttribute Customer customer){
 
         return "profile";
     }
 
-    @PutMapping("/edit-phone")
+    @PostMapping("/edit-phone")
     public String editPhoneNumber(@ModelAttribute Customer customer){
 
         return "profile";
     }
 
-    @PutMapping("/change-password")
+    @PostMapping("/change-password")
     public String changePassword(@ModelAttribute Customer customer, @RequestParam("confirmPassword") String confirmPassword){
 
         return "profile";

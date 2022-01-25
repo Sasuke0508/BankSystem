@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -38,10 +37,10 @@ public class UserController {
         }
         else{
             session.setAttribute("userLogin", user);
-            if(user.getRole().equals("customer")){
+            if(user.getRole().equals("Customer")){
                 return "redirect:/customer";
             }
-            else if(user.getRole().equals("employee")){
+            else if(user.getRole().equals("Employee")){
                 return "redirect:/employee";
             }
         }
