@@ -5,6 +5,7 @@ import com.sasuke0508.banksystem.repository.BranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,9 @@ public class BranchServiceImpl implements BranchService{
 
     @Autowired
     private BranchRepository branchRepository;
+
+    private final String pattern = "yyyy-MM-dd";
+    private SimpleDateFormat formatter = new SimpleDateFormat(pattern);
     /**
      * Add new branch
      *

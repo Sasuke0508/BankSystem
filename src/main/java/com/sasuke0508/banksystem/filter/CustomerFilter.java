@@ -22,9 +22,9 @@ public class CustomerFilter implements Filter {
         HttpServletRequest request1 = (HttpServletRequest) request;
         HttpServletResponse response1 = (HttpServletResponse) response;
         HttpSession session = request1.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("userLogin");
         if (user != null) {
-            if(!user.getRole().equals("customer")){
+            if(!user.getRole().equals("Customer")){
                 response1.sendRedirect(((HttpServletRequest) request).getContextPath() + "/login");
             }
             chain.doFilter(request, response);

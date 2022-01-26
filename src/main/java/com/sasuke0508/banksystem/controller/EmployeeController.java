@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -27,9 +28,8 @@ public class EmployeeController {
     private CustomerService customerService;
 
     @GetMapping("")
-    public String showDashBoard(Model model, HttpSession session){
-
-        return "home";
+    public String showDashBoard(){
+        return "employee/index";
     }
 
     @GetMapping("/bank-accounts")
@@ -46,8 +46,9 @@ public class EmployeeController {
 
     @GetMapping("/customer-list")
     public String showListCustomer(Model model){
-
-        return "customer-list";
+        List<Customer> customerList = customerService.getAllCustomer();
+        model.addAttribute("customerList", customerList);
+        return "employee/customer-list";
     }
 
     @PostMapping("/add-customer")

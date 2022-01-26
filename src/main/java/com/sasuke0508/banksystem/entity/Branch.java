@@ -3,10 +3,9 @@ package com.sasuke0508.banksystem.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 @Entity
 @Data
@@ -18,5 +17,7 @@ public class Branch {
     private String id;
     private String name;
     private String address;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
     private Date createDate;
 }

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(filterName = "EmployeeFilter", urlPatterns = {"/employee/*"})
+@WebFilter(filterName = "EmployeeFilter", urlPatterns = {"/employee/*", "/branch/*", "/branch", "/employee"})
 public class EmployeeFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {
     }
@@ -22,9 +22,10 @@ public class EmployeeFilter implements Filter {
         HttpServletRequest request1 = (HttpServletRequest) request;
         HttpServletResponse response1 = (HttpServletResponse) response;
         HttpSession session = request1.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("userLogin");
+        System.out.println("==============================> User login: " + user);
         if (user != null) {
-            if(!user.getRole().equals("employee")){
+            if(!user.getRole().equals("Employee")){
                 response1.sendRedirect(((HttpServletRequest) request).getContextPath() + "/login");
             }
             chain.doFilter(request, response);
