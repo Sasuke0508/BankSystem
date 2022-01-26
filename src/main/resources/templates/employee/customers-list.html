@@ -864,3 +864,135 @@
 <!-- Mirrored from dreamguystech.com/preadmin/html/school/light/customers-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 05 Dec 2021 08:57:54 GMT -->
 
 </html>
+
+package storeonline.businesslogic.filter;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import storeonline.model.customer.Account;
+
+public class Authentication implements Filter {
+
+@Override
+public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+HttpServletRequest req = (HttpServletRequest) request;
+HttpServletResponse resp = (HttpServletResponse) response;
+
+Account _account = (Account) req.getSession().getAttribute("cur_account");
+
+if(_account == null) {
+resp.sendRedirect(req.getContextPath() + "/customer/login");
+}
+
+else
+chain.doFilter(request, response);
+}
+}
+
+
+package storeonline.businesslogic.filter;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+import storeonline.businesslogic.customerDAO.CustomerDAO;
+import storeonline.businesslogic.orderDAO.CartDAO;
+import storeonline.model.customer.Account;
+import storeonline.model.order.Cart;
+
+@Component
+@Order(1)
+public class CartFilter implements Filter {
+
+@Autowired
+private CartDAO cartDAO;
+
+@Autowired
+private CustomerDAO customerDAO;
+
+@Override
+public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+throws IOException, ServletException {
+
+HttpServletRequest req = (HttpServletRequest) request;
+
+Account account = (Account) req.getSession().getAttribute("cur_account");
+
+if(account == null) {
+req.getSession().setAttribute("SizeOfCart", 0);
+req.getSession().setAttribute("Total_price", 0);
+}
+else {
+String customerID = customerDAO.getCustomerIdByAccount(account);
+Cart cart = cartDAO.getCartByCustomerId(customerID);
+
+int quantity = cartDAO.getCartQuantity(cart.getId());
+float totalCost = cartDAO.getCartTotalCost(cart.getId());
+
+req.getSession().setAttribute("SizeOfCart", quantity);
+req.getSession().setAttribute("Total_price", totalCost);
+}
+
+chain.doFilter(request, response);
+}
+}
+
+
+package storeonline.config;
+
+import javax.sql.DataSource;
+
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import storeonline.businesslogic.filter.Authentication;
+
+@Configuration
+public class AppConfiguration {
+
+@Bean
+public DataSource getDataSource() {
+DriverManagerDataSource dataSource = new DriverManagerDataSource();
+dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+dataSource.setUrl("jdbc:mysql://localhost:3306/storeonline");
+dataSource.setUsername("root");
+dataSource.setPassword("19050820");
+return dataSource;
+}
+
+@Bean
+public FilterRegistrationBean<Authentication> loggingFilter(){
+	FilterRegistrationBean<Authentication> registrationBean
+		= new FilterRegistrationBean<>();
+		registrationBean.setFilter(new Authentication());
+
+		// Các đường dẫn request cần lắng nghe
+		registrationBean.addUrlPatterns("/customer/change_password");
+		registrationBean.addUrlPatterns("/customer/change_info");
+		registrationBean.addUrlPatterns("/checkout");
+		registrationBean.addUrlPatterns("/checkout/detail-chekout");
+		registrationBean.addUrlPatterns("/cart/addItem");
+		return registrationBean;
+		}
+		}
